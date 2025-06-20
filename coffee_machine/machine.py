@@ -1,5 +1,7 @@
 # imports
 
+import time
+
 from data import menu, supplies, coins
 
 # user interface variables
@@ -10,6 +12,7 @@ drinks_prompt = ""
 BLUE_TEXT = "\033[34m"
 GREEN_TEXT = "\033[32m"
 YELLOW_TEXT = "\033[33m"
+RED_TEXT = "\033[31m"
 DEFAULT_TEXT = "\033[0m"
 
 # machine operation variables
@@ -41,10 +44,18 @@ def serve():
             print(f"\n{YELLOW_TEXT}** ADMIN REPORT end **{DEFAULT_TEXT}\n")
         elif command == "off":
             machine_on = False
+            power_off = f"Shutting down..."
+            print(power_off)
+            for bar in range(len(power_off) + 1):
+                loaded = "." * bar
+                pending = "%" * (len(power_off) - bar)
+                print(f"\r[{loaded}{pending}]", end="", flush=True)
+                time.sleep(0.05)
         else:
             order = int(command) - 1
             price = menu[drinks[order]]["price"]["amount"]
-            print(f"\nPlease insert coins to prepare your {drinks[order]}:\n")
+            print(f"\nPlease insert coins to prepare your {drinks[order]}.")
+            print(f"Due: {RED_TEXT}${float(price):.2f}{DEFAULT_TEXT}\n")
             for coin in coins:
                 if paid < price:
                     paid += float(input(f"Amount of {coin}: ")) * (coins[coin])
@@ -62,22 +73,42 @@ def serve():
                 print(f"Paid: {GREEN_TEXT}${paid:.2f}{DEFAULT_TEXT}/${float(price):.2f}\n")
 
             if paid < price:
-                print(f"Insufficient funds, here's your reimburse: ${paid}\n")
-                print("___________________________\n")
+                reimburse = f"{RED_TEXT}Insufficient funds, here's your reimbursement: ${float(paid):.2f}{DEFAULT_TEXT}"
+                print(reimburse)
+                for char in reimburse:
+                    print("_", end="")
+                print("\n")
         
     except (ValueError, IndexError):
         print("\n**INVALID SELECTION**\n\n")
         serve()
 
 def prepareDrink(give_change, change, drink, ingredients):
+    # TODO check if supplies are enough
+    
     if give_change:
         print(f"Here's your change: {GREEN_TEXT}${float(change):.2f}{DEFAULT_TEXT}\n\n")
-    print(f"Preparing your {drink}...")
+
+    preparing = f"Preparing your {drink}..."
+    print(preparing)
+    for bar in range(len(preparing) + 1):
+        loaded = "#" * bar
+        pending = "." * (len(preparing) - bar)
+        print(f"\r[{loaded}{pending}]", end="", flush=True)
+        time.sleep(0.05)
+    
+    print("\n")
+
     for supply in machine_supplies_list:
         machine_supplies[supply]["amount"] -= ingredients[supply]["amount"]
     
-    print(f"Here's your {drink}, enjoy!\n")
-    print("___________________________\n")
+    deliver = f"Here's your {drink} ☕, enjoy!"
+    print(deliver)
+
+    for char in deliver:
+        print("_", end="")
+
+    print("\n")
 
 def run():
     while machine_on:
