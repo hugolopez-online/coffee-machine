@@ -64,16 +64,16 @@ def serve():
                     change_amount = paid - price
 
                     if paid == price:
-                        prepareDrink(not overpaid, change_amount, drinks[order], menu[drinks[order]]["ingredients"])
+                        prepareDrink(not overpaid, paid, change_amount, drinks[order], menu[drinks[order]]["ingredients"])
                         return
                     elif paid > price:
-                        prepareDrink(overpaid, change_amount, drinks[order], menu[drinks[order]]["ingredients"])
+                        prepareDrink(overpaid, paid, change_amount, drinks[order], menu[drinks[order]]["ingredients"])
                         return
                 
                 print(f"Paid: {GREEN_TEXT}${paid:.2f}{DEFAULT_TEXT}/${float(price):.2f}\n")
 
             if paid < price:
-                reimburse = f"{RED_TEXT}Insufficient funds, here's your reimbursement: ${float(paid):.2f}{DEFAULT_TEXT}"
+                reimburse = f"{RED_TEXT}Insufficient funds, here's your refund: ${float(paid):.2f}{DEFAULT_TEXT}"
                 print(reimburse)
                 for char in reimburse:
                     print("_", end="")
@@ -83,9 +83,14 @@ def serve():
         print("\n**INVALID SELECTION**\n\n")
         serve()
 
-def prepareDrink(give_change, change, drink, ingredients):
+def prepareDrink(give_change, refund, change, drink, ingredients):
     # TODO check if supplies are enough
-    
+
+    for supply in machine_supplies_list:
+        if machine_supplies[supply]["amount"] < ingredients[supply]["amount"]:
+            print(f"Not enough supplies. Here's your refund {GREEN_TEXT}${float(refund):.2f}{DEFAULT_TEXT}\n")
+            return
+
     if give_change:
         print(f"Here's your change: {GREEN_TEXT}${float(change):.2f}{DEFAULT_TEXT}\n\n")
 

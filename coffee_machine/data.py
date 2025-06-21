@@ -101,15 +101,15 @@ menu = {
 supplies = {
     WATER: {
         UNITS: MILLILITERS,
-        AMOUNT: 10000,
+        AMOUNT: 400,
     },
     MILK: {
         UNITS: MILLILITERS,
-        AMOUNT: 20000,
+        AMOUNT: 900,
     },
     COFFEE: {
         UNITS: GRAMS,
-        AMOUNT: 10000,
+        AMOUNT: 200,
     },
 }
 
